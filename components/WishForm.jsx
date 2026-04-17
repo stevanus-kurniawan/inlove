@@ -28,8 +28,8 @@ export function WishForm() {
     const done = setTimeout(() => setIsAnimating(false), 7000);
 
     toast.info(
-      "Ucapan Anda telah kami terima. Agar ruang ini tetap hormat, ungkapan Anda akan ditinjau keluarga sebelum ditampilkan. Terima kasih atas kata-kata Anda.",
-      { duration: 9000 }
+      "Pesan Anda akan kami tinjau terlebih dahulu sebelum ditampilkan.",
+      { duration: 5000 }
     );
 
     formRef.current?.reset();
@@ -45,7 +45,7 @@ export function WishForm() {
         Sampaikan Ucapan & Doa
       </h2>
       <p className="mt-2 text-sm text-slate-600">
-      Pesan Anda akan kami tinjau terlebih dahulu sebelum ditampilkan.
+      Terima kasih telah berbagi kenangan
       </p>
       <form ref={formRef} action={formAction} className="mt-6 flex flex-col gap-5">
         <div>
