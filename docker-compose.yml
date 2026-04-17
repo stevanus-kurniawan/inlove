@@ -22,8 +22,8 @@ services:
       - "3005:3005"
     environment:
       DATABASE_URL: postgresql://tribute:tribute@db:5432/tribute
-      ADMIN_USER: admin
-      ADMIN_PASSWORD: changeme
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}
       # Override in .env or compose override — must be set for admin login
       ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-change-me-use-openssl-rand-hex-32}
       NODE_ENV: development
