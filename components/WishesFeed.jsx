@@ -16,7 +16,7 @@ export function WishesFeed({ wishes }) {
             Belum ada ucapan. Jadilah orang pertama yang meninggalkan pesan.
           </div>
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-4">
             {wishes.map((w) => (
               <WishCard key={w.id} wish={w} />
             ))}
