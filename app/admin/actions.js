@@ -80,3 +80,28 @@ export async function rejectWish(id, formData) {
   revalidatePath("/admin");
   revalidatePath("/");
 }
+
+export async function revokeApproval(id, formData) {
+  void formData;
+  if (!(await isAdminSessionValid())) {
+    return { error: "Unauthorized." };
+  }
+  const num = Number(id);
+  if (!Number.isInteger(num) || num < 1) {
+    return { error: "Invalid wish." };
+  }
+  try {
+    const r = await pool.query(
+      `UPDATE wishes SET status = $1 WHERE id = $2 AND status = 'approved'`,
+      ["pending", num]
+    );
+    if (r.rowCount === 0) {
+      return { error: "Wish not found or not approved." };
+    }
+  } catch (e) {
+    console.error("[revokeApproval]", e);
+    return { error: "Update failed." };
+  }
+  revalidatePath("/admin");
+  revalidatePath("/");
+}

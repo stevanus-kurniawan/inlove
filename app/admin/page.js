@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logoutAdmin } from "@/app/admin/actions";
+import { ApprovedWishesAdmin } from "@/components/admin/ApprovedWishesAdmin";
 import { PendingWishesAdmin } from "@/components/admin/PendingWishesAdmin";
 import { isAdminSessionValid } from "@/lib/auth";
 import { pool } from "@/lib/db";
@@ -24,16 +25,29 @@ async function getPendingWishes() {
   }
 }
 
+async function getApprovedWishes() {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM wishes WHERE status = 'approved' ORDER BY created_at DESC`
+    );
+    return result.rows;
+  } catch (e) {
+    console.error("[getApprovedWishes]", e);
+    return [];
+  }
+}
+
 export default async function AdminDashboardPage() {
   if (!(await isAdminSessionValid())) {
     redirect("/admin/login");
   }
 
   const pending = await getPendingWishes();
+  const approved = await getApprovedWishes();
 
   return (
-    <main className="mx-auto min-h-screen max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <main className="mx-auto min-h-screen max-w-6xl space-y-10 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-slate-900">
           <LayoutDashboard className="h-6 w-6" aria-hidden />
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
@@ -69,6 +83,20 @@ export default async function AdminDashboardPage() {
         </div>
 
         <PendingWishesAdmin wishes={pending} />
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+        <div className="border-b border-slate-100 px-6 py-4">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Approved wishes
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            These appear on the public page. Use “Revoke to pending” to remove
+            them from the site until you approve again.
+          </p>
+        </div>
+
+        <ApprovedWishesAdmin wishes={approved} />
       </div>
     </main>
   );
